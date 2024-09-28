@@ -1,4 +1,4 @@
-### Exercício 1: Análise Econômica Comparativa
+### Exercício 1º: Análise Econômica Comparativa
 
 **Objetivo:** Utilizar dados econômicos para identificar países com indicadores de desempenho acima da média. 
 
@@ -17,7 +17,7 @@ Este exercício pretende introduzir os alunos à análise de dados econômicos u
 - **Passo 3:** Usar estruturas condicionais para verificar quais países atendem aos critérios estabelecidos.
 - **Passo 4:** Imprimir os resultados de forma clara, indicando os países selecionados.
 
-### Exercício 2: Gerenciamento de Inventário de Produtos
+### Exercício 2º: Gerenciamento de Inventário de Produtos
 
 **Objetivo:** Desenvolver um script para gerenciar um inventário de produtos, incluindo operações de adição e análise de dados.
 
