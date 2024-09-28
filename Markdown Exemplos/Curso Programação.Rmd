@@ -1,0 +1,606 @@
+---
+title: "Curso Programação"
+author: "Ricardo Aguirre Leal"
+date: "2024-09-27"
+output: html_document
+---
+
+## Tipos de Variáveis
+
+```{python}
+num  = 5
+print(num)
+
+str_num = str(num)
+int_num = int(str_num)
+
+print(str_num, type(str_num))
+print(int_num, type(int_num))
+```
+
+```{python}
+num2 = 5.0
+flo_num = float(num)
+
+print(num2, type(num2))
+print(flo_num, type(flo_num))
+```
+
+```{r}
+num = 5
+
+str_num = as.character(num)
+int_num = as.numeric(str_num)
+
+cat(str_num, typeof(str_num), "\n")
+cat(int_num, typeof(int_num))
+```
+
+```{python}
+x = [1, 2, 5, 9]
+
+print(type(x))
+print(max(x))
+```
+
+```{r}
+x = c(1, 2, 5, 9)
+
+print(typeof(x))
+print(max(x))
+```
+
+------------------------------------------------------------------------
+
+## Python - Variáveis e referências
+
+Diferentemente de algumas outras linguagens, onde os nomes das variáveis representam endereços de memória, em Python os nomes armazenam apenas referências. Os objetos, por sua vez, que são responsáveis por alocar e usar a memória, não são os nomes.
+
+Em resumo, temos nomes e referências. Cada nome contém uma referência a um objeto.
+
+Quando um objeto não possui mais referências, ele é automaticamente removido da memória, liberando o espaço que ocupava.
+
+```{python}
+x = [1, 2, 5, 9, 12]
+y = x
+print(y)
+
+x = [1, 2]
+print(y)
+print(x)
+```
+
+Aqui a variável `y` passa a fazer referência ao mesmo objeto `[1, 2, 5, 9]` ao qual x faz referência. Em seguida, xpassa a fazer referência a um novo objeto `[1, 2, 5, 9, 12]`, mas ynão muda a sua referência...
+
+```{python}
+a = [1, 2, 5, 9, 12]
+b = a
+#b = a.copy()
+
+a.append(15)
+print(f'a = {a}')
+print(f'b = {b}')
+```
+
+O comando `a.append(15)` não cria um novo objeto, mas modifica o objeto `[1, 2, 5, 9, 12]` ao qual a e b estão fazendo referência. Abaixo outro exemplo:
+
+```{python}
+list_a = [1, 2, 3]
+list_b = list_a  # list_b faz referência ao mesmo objeto que list_a
+
+list_a += [4, 5]  # Modifica o objeto referenciado por list_a e list_b
+
+print(f'list_a = {list_a}')  
+print(f'list_b = {list_b}')  
+
+```
+
+No R isso não acontece:
+
+```{r}
+list_a = c(1, 2, 3)
+list_b = list_a
+
+list_a = c(list_a, c(4, 5))
+
+cat('list_a = ', list_a, "\n")
+cat('list_b = ', list_b)
+```
+
+------------------------------------------------------------------------
+
+Em **MATLAB**, o comportamento de variáveis e referências é parecido com **R**. Em termos de como as variáveis se comportam ao atribuir valores e modificar objetos, **MATLAB** segue o conceito de **copy-on-write** (cópia na escrita), o que significa que, ao atribuir uma variável a outra, não é feita uma cópia do valor imediatamente, mas apenas uma referência.
+
+No entanto, se o conteúdo da variável original ou da cópia for modificado, o **MATLAB** criará uma cópia nova para manter a integridade dos dados.
+
+```{_MATLAB}
+A = [1, 2, 3];
+B = A;  % B referencia o mesmo array que A
+
+A(1) = 10;  % Agora uma cópia de A é criada e modificada
+disp(A)  % Exibe [10, 2, 3]
+disp(B)  % Exibe [1, 2, 3] (não é modificado)
+```
+
+------------------------------------------------------------------------
+
+No Stata, as variáveis locais (e globais) são manipuladas por cópia de valor, e não por referência, o que difere do comportamento de Python (referência a objetos) e do conceito de "copy-on-write" em R e MATLAB.
+
+```{_Stata}
+// Executar no .do file. No command, sem os comentários
+local a 5
+local b `a'    // Copia o valor de `a' para `b'
+
+display "`a'"  
+display "`b'"  
+
+local a 10     // Modifica o valor de `a'
+display "`a'"  
+display "`b'"  // Exibe 5 (não foi alterado)
+```
+
+### Resumo
+
+-   **Python**: Trabalha com referências. Isso significa que alterar um objeto através de uma variável pode alterar outras variáveis que referenciam o mesmo objeto, a menos que uma cópia explícita seja feita.
+
+-   **R e MATLAB**: Utilizam o conceito de cópia na escrita ("copy-on-write"), ou seja, as variáveis inicialmente compartilham o mesmo valor, mas, quando modificadas, criam uma cópia e as alterações não afetam outras variáveis.
+
+-   **Stata**: Não trabalha com referências entre variáveis. Toda vez que você atribui uma variável a outra, Stata faz uma cópia do valor. Alterar o valor de uma variável não afeta outras variáveis que foram copiadas a partir dela.
+
+------------------------------------------------------------------------
+
+***Obs variáveis globais no Stata***: em Stata existem **variáveis globais** que são similares às variáveis locais, com uma diferença das locais: as variáveis globais podem ser acessadas de qualquer parte do código, enquanto as **variáveis locais** têm um escopo restrito ao bloco de código ou programa onde foram definidas. As variáveis locais são limitadas ao escopo do loop, do script onde foram definidas. Após o término desse bloco de código, as variáveis locais deixam de existir.
+
+```{_Stata}
+local a 5
+global b 10
+
+display "`a'"   // Exibe o valor da variável local 'a'
+display "$b"    // Exibe o valor da variável global 'b'
+
+```
+
+```{_Stata}
+program define exemplo_local
+    local z 10  // Define a variável local 'x' com valor 10
+    display "`z'"  // Exibe o valor da variável local 'x'
+end
+
+exemplo_local
+
+display "`z'"  // Aparece nada!
+```
+
+### Variáveis Imutáveis no Python:
+
+1\. Inteiros (\`int\`)
+
+2\. Números de ponto flutuante (\`float\`)
+
+4\. Strings (\`str\`)
+
+5\. Tuplas (\`tuple\`)
+
+6\. Booleanos (\`bool\`)
+
+### Variáveis Mutáveis no Python:
+
+1\. Listas (\`list\`)
+
+2\. Dicionários (\`dict\`)
+
+3\. Conjuntos (\`set\`)
+
+------------------------------------------------------------------------
+
+# Vetores, arrays e listas
+
+*No R:*
+
+```{r}
+vetor1 = c(1, 2, 3, 4); vetor1
+lista1 = list(1, "a", TRUE, 3.14); lista1 
+lista1[[4]]
+array1 = array(1:12, dim = c(3, 4)); array1 # uma matriz
+array2 = array(1:8, dim = c(2, 2, 2)); array2 # uma array de 2 matrizes
+```
+
+*No Python:*
+
+```{python}
+lista1 = [1, 'a', True, 3.14]
+print(lista1)
+array1 = [[1, 2, 3, 4], [5, 6, 7, 8], [9, 10, 11, 12]]
+print(array1*2)
+
+import numpy as np
+array2 = np.array([[1, 2, 3, 4], [5, 6, 7, 8], [9, 10, 11, 12]])
+print(array2*2)
+
+
+```
+
+# Dicionários e data frames
+
+*No R:*
+
+```{r}
+lista1 = list(1, "a", TRUE, 3.14)
+dic1 = list(1, "nome1" = "a", TRUE, "pi" = 3.14, "mlista" = lista1); dic1
+dic1$nome1
+dic1[[4]]
+dic1$pi
+```
+
+```{r}
+array1 = array(1:12, dim = c(3, 4)); array1 # uma matriz
+(tabela1 = data.frame(Coluna1 = c(1, 2, 3), Coluna2 = c("a", "b", "c")))
+(tabela2 = data.frame(array1))
+
+
+```
+
+*No Python:*
+
+```{python}
+dic1 = {"nome1": [1, 2, 3, 4], "nome2": 3}
+print(dic1)
+print(dic1["nome1"])
+print(dic1["nome1"] * dic1["nome2"])
+dic1["nome2"] = [3, 3, 3, 3]
+dic1["nome3"] = dic1["nome1"] + dic1["nome2"]
+print(dic1)
+```
+
+```{python}
+import pandas as pd
+df = pd.DataFrame(dic1)
+print(df)
+df["nome3"] = df["nome1"] + df["nome2"]
+print(df)
+```
+
+------------------------------------------------------------------------
+
+# Exemplos
+
+```{r}
+(paises <- c("Brasil", "EUA", "Alemanha", "Índia"))
+(pib <- c(1.84, 21.43, 3.84, 2.87) ) # Trilhões de dólares
+(taxa_desemprego <- c(12.6, 5.8, 3.1, 7.9) ) # Percentual
+
+# Calculando a média da taxa de desemprego
+media_desemprego <- mean(taxa_desemprego)
+
+# Criando um vetor booleano que identifica economias fortes
+economias_fortes <- (taxa_desemprego < media_desemprego) & (pib > 2.5)
+
+# Resultados
+print("Economia forte em:")
+print(paises[economias_fortes])
+
+```
+
+```{python}
+import pandas as pd
+
+# Criando um DataFrame com dados de exemplo
+data = {
+    'nome': ['João', 'Maria', 'Pedro', 'Ana'],
+    'renda': [5000, 7000, 4000, 6000],  # Renda mensal em dólares
+    'consumo': [2000, 3000, 2500, 4000]  # Consumo mensal em dólares
+}
+df = pd.DataFrame(data)
+
+# Calculando a proporção de consumo/renda e identificando poupadores
+df['poupador'] = (df['consumo'] / df['renda']) < 0.5
+
+# Filtrando poupadores
+poupadores = df[df['poupador']]
+
+print(poupadores[['nome', 'renda', 'consumo']])
+```
+
+------------------------------------------------------------------------
+
+## Instruções Condicionais
+
+\# Exemplo de if-else em **R**
+
+```{r}
+x <- 10
+if (x > 5) {
+  print("x é maior que 5")
+} else {
+  print("x é menor ou igual a 5")
+}
+
+```
+
+\# Exemplo de if-else em **Python**
+
+```{python}
+x = 10
+
+if x > 5:
+  print("x é maior que 5")
+else:
+  print("x é menor ou igual a 5")
+```
+
+## Loops e controle de fluxo
+
+Exemplo de loop for em **R**
+
+O `while` é usado quando você não sabe quantas iterações o loop vai executar de antemão, mas sabe uma condição que precisa ser verdadeira para o loop continuar executando. O loop continua até que a condição seja falsa.
+
+```{r}
+for (i in 1:5) {
+  print(i)
+}
+#---
+count = 1
+while (count <= 5) {
+  print(count)
+  count = count + 1
+}
+
+```
+
+5 %% 2
+
+```{r}
+for (i in 1:10) {
+  if (i => 6) break
+  print(i)
+}
+#---
+for (i in 1:5) {
+  if (i %% 2 == 0) next
+  print(i)
+}
+```
+
+Exemplo de loop for em **Python**
+
+```{python}
+for i in range(1, 6):
+  print(i)
+#---
+count = 1
+while count <= 5:
+  print(count)
+  count += 1
+
+```
+
+```{python}
+for i in range(1, 11):
+    if (i == 8):
+        break
+    print(i)
+#---
+for i in range(1, 6):
+    if i % 2 == 0:
+        continue
+    print(i)
+```
+
+## Funções
+
+### Em R:
+
+```{r}
+x <- "valor global"
+
+funcaoTeste <- function() {
+  x <- "valor local"
+  print(paste("Dentro da função: x =", x))
+}
+
+funcaoTeste()
+print(paste("Fora da função: x =", x))
+```
+
+```{r}
+# R passa argumentos por valor
+alteraValor <- function(num) {
+  num <- num * 10
+  print(paste("Dentro da função: num =", num))
+}
+
+num <- 5
+alteraValor(num)
+print(paste("Fora da função: num =", num))
+```
+
+### No Python:
+
+```{python}
+x = "valor global"
+
+def funcao_teste():
+    x = "valor local"
+    print(f"Dentro da função: x = {x}")
+    
+def funcao_teste2():
+    global x
+    x = "valor local"
+    print(f"Dentro da função: x = {x}")
+
+funcao_teste()
+print(f"Fora da função: x = {x}")
+funcao_teste2()
+print(f"Fora da função: x = {x}")
+```
+
+```{python}
+# Python passa argumentos imutáveis por valor e mutáveis por referência
+
+# imutável:
+def altera_valor(num):
+    num *= 10
+    print(f"Dentro da função: num = {num}")
+
+num = 5
+altera_valor(num)
+print(f"Fora da função: num = {num}")
+
+
+```
+
+```{python}
+# mutável:
+def altera_lista(lista):
+    lista.append("novo elemento")
+    print(f"Dentro da função: lista = {lista}")
+
+lista = ["original"]
+print(lista)
+altera_lista(lista)
+print(f"Fora da função: lista = {lista}")
+```
+
+*Imutáveis no Python:*
+
+1\. Inteiros (\`int\`)
+
+2\. Números de ponto flutuante (\`float\`)
+
+4\. Strings (\`str\`)
+
+5\. Tuplas (\`tuple\`)
+
+6\. Booleanos (\`bool\`)
+
+*Mutáveis:*
+
+1\. Listas (\`list\`)
+
+2\. Dicionários (\`dict\`)
+
+3\. Conjuntos (\`set\`)
+
+------------------------------------------------------------------------
+
+# Aplicação
+
+### No R:
+
+```{r}
+
+# Configuração inicial
+set.seed(123)
+
+# Criando uma matriz com 50 colunas de x, cada uma com 100 observações
+x_matrix <- matrix(rnorm(5000), ncol = 50)
+
+# Gerar dados aleatórios para y
+y <- 2 * rnorm(100, 2, 0.1) + rnorm(100)  # y depende de uma variável normal, mais algum ruído
+
+# Função para executar regressão e retornar coeficientes
+run_regression <- function(x, y) {
+  model <- lm(y ~ x)
+  coefficients <- coef(model)
+  r_squared <- summary(model)$r.squared
+  return(c(coefficients[2], r_squared))  # o coeficiente angular e R²
+}
+
+# Inicializando matriz para armazenar resultados com uma coluna adicional para o número da interação
+results <- matrix(NA, nrow = 50, ncol = 3)
+colnames(results) <- c("Iteração", "Coeficiente Angular", "R2")
+
+# Loop para executar regressão para cada coluna de x
+for (i in 1:50) {
+  results[i, ] <- c(i, run_regression(x_matrix[, i], y))
+}
+
+# Encontrando o maior R² e sua linha correspondente
+max_r2_index <- which.max(results[, 3])
+max_r2_row <- results[max_r2_index, ]
+
+# Imprimindo a linha com o maior R²
+print(paste("Linha maior R²: Iteração", max_r2_row[1]))
+print(paste("Coef Angular =", max_r2_row[2], ", R² =", max_r2_row[3]))
+print(results)
+```
+
+### No Python
+
+```{python}
+import numpy as np
+import statsmodels.api as sm
+
+# Configuração inicial
+np.random.seed(123)
+
+# Criando uma matriz com 50 colunas de x, cada uma com 100 observações
+x_matrix = np.random.normal(size=(100, 50))
+
+# Gerar dados aleatórios para y
+y = 2 * np.random.normal(size=100) + np.random.normal(size=100)  # y depende de uma variável normal, mais algum ruído
+
+# Função para executar regressão e retornar coeficientes
+def run_regression(x, y):
+    x = sm.add_constant(x)  # adiciona uma constante ao modelo
+    model = sm.OLS(y, x)
+    results = model.fit()
+    return results.params[1], results.rsquared  # Retorna o coeficiente angular e R²
+
+# Inicializando matriz para armazenar resultados com uma coluna adicional para o número da interação
+results = np.zeros((50, 3))
+
+# Loop para executar regressão para cada coluna de x
+for i in range(50):
+    coef, r_squared = run_regression(x_matrix[:, i], y)
+    results[i, :] = [i + 1, coef, r_squared]  # Armazena o número da iteração, coeficiente angular e R²
+
+# Encontrando o maior R² e sua linha correspondente
+max_r2_index = np.argmax(results[:, 2])
+max_r2_row = results[max_r2_index]
+
+# Imprimindo a linha com o maior R²
+print(f"Linha com maior R²: Iteração {int(max_r2_row[0])}")
+print(f"Coeficiente Angular = {max_r2_row[1]:.4f}, R² = {max_r2_row[2]:.4f}")
+
+# Imprimindo a tabela 
+print(results)
+    
+```
+
+### No MATLAB:
+
+```{_MATLAB-Octave}
+pkg load statistics
+
+% Configuração inicial
+rng(123); % Definindo a semente para a geração de números aleatórios
+
+% Criando uma matriz com 50 colunas de x, cada uma com 100 observações
+x_matrix = randn(100, 50);
+
+% Gerar dados aleatórios para y
+y = 2 * randn(100, 1) + randn(100, 1); % y depende de uma variável normal, mais algum ruído
+
+% Inicializando matriz para armazenar resultados com uma coluna adicional para o número da interação
+results = zeros(50, 3);
+
+% Loop para executar regressão para cada coluna de x
+for i = 1:50
+    x = x_matrix(:, i);
+    X = [ones(length(y), 1), x]; % Adicionando uma coluna de uns para o intercepto
+    [b, ~, ~, ~, stats] = regress(y, X); % Executando a regressão
+    results(i, :) = [i, b(2), stats(1)]; % Armazenando o número da iteração, coeficiente angular e R²
+end
+
+% Encontrando o maior R² e sua linha correspondente
+[~, max_r2_index] = max(results(:, 3));
+max_r2_row = results(max_r2_index, :);
+
+% Imprimindo a linha com o maior R²
+fprintf('Linha com maior R²: Iteração %d\n', max_r2_row(1));
+fprintf('Coeficiente Angular = %.4f, R² = %.4f\n', max_r2_row(2), max_r2_row(3));
+
+% Imprimindo a tabela completa
+disp(results);
+```
