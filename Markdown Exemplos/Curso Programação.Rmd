@@ -604,3 +604,290 @@ fprintf('Coeficiente Angular = %.4f, R² = %.4f\n', max_r2_row(2), max_r2_row(3)
 % Imprimindo a tabela completa
 disp(results);
 ```
+
+------------------------------------------------------------------------
+
+# Programação recursiva:
+
+Dada uma função $f(n)$, que depende de um valor $n$, podemos formalizar o conceito de recursão como:
+
+$$
+f(n) = \begin{cases}
+  C, & \text{se } n = n_0 \\
+  g(n, f(n-1)), & \text{se } n > n_0
+\end{cases}
+$$
+
+Onde:
+
+-   $n_0$ é o valor do caso base, que é uma condição inicial onde a função retorna um valor constante $C$ e não chama a si mesma;
+-   $g(n, f(n-1))$ representa a chamada recursiva, onde a função $f(n)$ é definida em termos de uma função $g$, que envolve o valor atual $n$ e a função $f$ avaliada em $n-1$; e
+-   A função $f(n-1)$ indica a chamada da função $f$ com um valor menor de $n$, o que aproxima o problema da condição base $n_0$.
+
+Do ponto de vista técnico, a recursão pode ser descrita em termos da \\textbf{**pilha de chamadas**} (stack). Cada vez que a função é chamada, uma nova instância dela é empilhada na memória, esperando que a chamada subsequente seja resolvida. Quando a chamada recursiva atinge o caso base, a pilha começa a ser desempilhada, resolvendo cada chamada conforme volta.
+
+Para ilustrar, considere o fatorial, que pode ser formalizado como:
+
+$$
+f(n) =  \begin{cases}
+  1, & \text{se } n = 0 \\
+  n \times f(n-1), & \text{se } n > 0
+\end{cases}
+$$
+
+Neste exemplo, o caso base é $f(0) = 1$ e a definição recursiva é $f(n) = n \times f(n-1)$. O processo computacional ocorre na seguinte sequência: se $n = 3$, a função $f(3)$ chama $f(2)$, que por sua vez chama $f(1)$, e assim por diante até $f(0)$ ser atingido. Uma vez que $f(0) = 1$, o valor de $f(1)$, $f(2)$, $f(3)$ é então computado ao voltar pela cadeia de chamadas.
+
+### Função recursiva para calcular o fatorial em R:
+
+```{r}
+fatorial <- function(n) {
+  print(paste("Chamada: fatorial(", n, ")"))  # Log para visualizar a chamada
+  if (n == 0) {
+    print("Caso base alcançado: fatorial(0) = 1")
+    return(1)
+  } else {
+    result <- n * fatorial(n - 1)
+    print(paste("Retorno: fatorial(", n, ") = ", result))
+    return(result)
+  }
+}
+
+# Exemplo de uso
+n = 5
+print(paste("Chamada função fatorial(), com n =", n))
+fatorial(n)  # Resultado: 120
+```
+
+### Função recursiva para calcular o Valor Presente Líquido (VPL) no Python:
+
+O **VPL** é uma técnica de avaliação financeira que converte uma série de fluxos de caixa futuros em um valor presente, descontando-os por uma taxa de desconto. A função `calcular_vpl` abaixo utiliza a recursão para somar o valor presente de cada fluxo de caixa de maneira sequencial. A função `calcular_vpl` é recursiva porque ela chama a si mesma para calcular o valor presente de cada fluxo de caixa para o próximo período, até que todos os fluxos tenham sido processados.
+
+```{python}
+def calcular_vpl(fluxos, taxa, periodo=0):
+  if periodo == len(fluxos):
+    print(f"Caso base alcançado: último período, n = {periodo}")
+    return 0
+  else:
+    presente = fluxos[periodo] / ((1 + taxa)**periodo)
+    print(f"Chamada: período {periodo}, valor presente = {presente:.2f}")  
+    vpl = calcular_vpl(fluxos, taxa, periodo + 1)
+    print(f"Retorno: VPL dos fluxos até o período {periodo}: {presente+vpl:.2f}")
+    return presente + vpl
+
+# Exemplo de uso: uma série de fluxos de caixa futuros
+fluxos_de_caixa = [1000, 1500, 2000, 2500, 3000]  # fluxos próximos 5 anos
+taxa_de_desconto = 0.05  # taxa de desconto anual de 5%
+
+print(f"Chamada  função calcular_vpc(), com {len(fluxos_de_caixa)} períodos")
+vpl = calcular_vpl(fluxos_de_caixa, taxa_de_desconto)
+print(f"Valor Presente Líquido total = {vpl:.2f}")
+```
+
+Estrutura da Recursão:
+
+1.  **Caso Base**:
+    -   O caso base é alcançado quando o valor do parâmetro `periodo` for igual ao comprimento da lista de fluxos de caixa (`fluxos`). Nesse ponto, a função não precisa calcular mais nenhum valor presente, pois todos os fluxos de caixa já foram considerados. Quando o caso base é atingido, a função retorna 0, encerrando o processo recursivo.
+
+```{python}
+if periodo == len(fluxos):
+    return 0
+```
+
+2.  **Passo Recursivo**:
+
+-   No passo recursivo, a função calcula o valor presente do fluxo de caixa no período atual, usando a fórmula financeira de desconto:
+
+$$
+\text{presente} = \frac{\text{fluxos}[periodo]}{(1 + \text{taxa})^{periodo}}
+$$
+
+Após calcular o valor presente do fluxo de caixa no período atual, a função imprime o resultado e então chama a si mesma para processar o fluxo de caixa do **próximo período** (`periodo + 1`). O valor presente calculado é somado ao valor que a função retornará para o próximo período.
+
+```{python}
+presente = fluxos[periodo] / ((1 + taxa)**periodo)
+return presente + calcular_vpl(fluxos, taxa, periodo + 1)
+```
+
+Desempilhando o Processo Recursivo:
+
+Para entender o funcionamento da recursão neste código, vamos examinar um exemplo com a lista de fluxos de caixa `fluxos_de_caixa = [1000, 1500, 2000, 2500, 3000]` e uma taxa de desconto de `5%` (ou `0.05`).
+
+1.  **Período 0**:
+    -   O fluxo de caixa no período 0 é `1000`.
+    -   O valor presente é calculado como $1000 / (1 + 0.05)^0 = 1000$.
+    -   A função chama a si mesma para o **período 1**.
+2.  **Período 1**:
+    -   O fluxo de caixa no período 1 é `1500`.
+    -   O valor presente é $1500 / (1 + 0.05)^1 = 1428.57$.
+    -   A função chama a si mesma para o **período 2**.
+3.  **Período 2**:
+    -   O fluxo de caixa no período 2 é `2000`.
+    -   O valor presente é $2000 / (1 + 0.05)^2 = 1814.06$.
+    -   A função chama a si mesma para o **período 3**.
+4.  **Período 3**:
+    -   O fluxo de caixa no período 3 é `2500`.
+    -   O valor presente é $2500 / (1 + 0.05)^3 = 2159.59$.
+    -   A função chama a si mesma para o **período 4**.
+5.  **Período 4**:
+    -   O fluxo de caixa no período 4 é `3000`.
+    -   O valor presente é $3000 / (1 + 0.05)^4 = 2468.11$.
+    -   A função chama a si mesma para o **período 5**.
+6.  **Período 5** (Caso Base):
+    -   O caso base é atingido quando o `periodo` é igual ao comprimento da lista de fluxos (`len(fluxos)`), ou seja, no período 5. Neste ponto, a função retorna 0 e a recursão começa a ser "desempilhada".
+
+A função vai "desempilhando" suas chamadas anteriores, somando o valor presente de cada período ao longo do caminho. Assim, no retorno da chamada final, teremos a soma de todos os valores presentes, que corresponde ao **Valor Presente Líquido** (VPL) dos fluxos de caixa fornecidos.
+
+No final, o valor de `vpl` será a soma dos valores presentes calculados para cada período:
+
+$$
+\text{VPL} = 1000 + 1428.57 + 1814.06 + 2162.47 + 2469.57 = 8870.33
+$$
+
+------------------------------------------------------------------------
+
+# Programação Paralela:
+
+### A computação serial, ou sequencial:
+
+*Execução de operações de cálculo uma após a outra*. Cada passo ou instrução deve ser completado antes que o próximo passo possa começar.
+
+A computação serial não requer hardware especial, pois pode ser realizada em qualquer CPU padrão, independentemente do número de núcleos ou threads que possa suportar.
+
+### Computação paralela:
+
+*Execução simultânea de múltiplas operações*. Pode ser implementada de várias maneiras, incluindo o uso de múltiplos núcleos de processamento dentro de um único chip, vários processadores dentro de um sistema, ou até mesmo em um cluster de máquinas que trabalham juntas para resolver um problema.
+
+A computação paralela é particularmente vantajosa para tarefas que podem ser divididas em partes menores que podem ser processadas simultaneamente, permitindo reduções significativas no tempo total de processamento.
+
+### Comparação de tempo: serial e paralelo:
+
+O código em R a seguir exemplifica a utilização da computação paralela para uma tarefa computacionalmente intensiva: *verificar se os números até um milhão são primos.*
+
+-   Criar função que verifica se `nr` é número primo:
+
+```{r}
+# Função para verificar se um número é primo
+is_prime <- function(nr) {
+  if (nr <= 1) return(FALSE)
+  for (i in 2:sqrt(nr)) {
+    if (nr %% i == 0) return(FALSE)
+  }
+  return(TRUE)
+}
+
+n <- 2000000   # Limite para o cálculo de números primos: 2 milhões
+```
+
+-   Executar a função `is_prime` em paralelo, de 1 a `n`. Salva o tempo de execução em `tempo_paralelo`.
+
+```{r}
+library(parallel)
+
+# Configurando o cluster de núcleos
+nucleos <- detectCores() - 1
+cl <- makeCluster(nucleos)
+clusterExport(cl, "is_prime")
+
+# Medindo o tempo de execução paralela
+tempo_paralelo <- system.time({
+  resultados_primos_paralelo <- parLapply(cl, 1:n, is_prime)
+})
+
+stopCluster(cl)
+
+print(paste("Tempo em paralelo: ", round(tempo_paralelo["elapsed"], 2), "segundos"))
+```
+
+-   Executar a função `is_prime` em serial, de 1 a `n`. Salva o tempo de execução em `tempo_serial`.
+
+```{r}
+# Medindo o tempo de execução serial
+tempo_serial <- system.time({
+  resultados_primos_serial <- lapply(1:n, is_prime)
+})
+
+print(paste("Tempo em serial: ", round(tempo_serial["elapsed"], 2), "segundos"))
+```
+
+-   Compara a execução, calculando a proporção de tempo de serial, em termos de tempo de paralelo:
+
+```{r}
+prop = tempo_serial["elapsed"]/tempo_paralelo["elapsed"]
+print(paste("Proporção serial/paralelo: ", round(prop, 2)))
+```
+
+## GPUs e paralelismo massivo
+
+## Mais sobre: <https://www.require-r.com/posts/2018/parallel_computing/>
+
+------------------------------------------------------------------------
+
+# Programação Orientada a Objetos:
+
+Uma **classe** define propriedades (ou **atributos**) e comportamentos (ou **métodos**) que serão compartilhados por todos as instâncias (ou **objetos**) desse tipo.
+
+**Atributos** são características que todos os objetos da classe compartilham, embora os valores específicos desses atributos possam variar entre objetos individuais.
+
+**Métodos** são funções definidas dentro de uma classe que descrevem os comportamentos ou ações que os objetos da classe podem realizar.
+
+**Herança** é um dos pilares da POO, habilita que uma classe (chamada de classe derivada ou subclasse) herde características de outra classe (chamada de classe base ou superclasse). Ela permite que a subclasse reutilize os atributos e métodos da superclasse, reduzindo a duplicação de código e promovendo a reutilização.
+
+```{python}
+class AgenteEconomico:
+  def __init__(self, nome, saldo):
+      self.nome = nome
+      self.saldo = saldo
+
+  def realizar_transacao(self, valor):
+      self.saldo += valor
+
+# Subclasse Consumidor
+class Consumidor(AgenteEconomico):
+  def consumir(self, valor):
+      if self.saldo >= valor:
+          self.saldo -= valor
+          print(f"{self.nome} consumiu {valor}")
+      else:
+          print("Saldo insuficiente")
+
+# Subclasse Produtor
+class Produtor(AgenteEconomico):
+  def produzir(self, valor):
+      self.saldo += valor
+      print(f"{self.nome} produziu e adicionou {valor} ao saldo")
+
+# Instanciando objetos
+consumidor = Consumidor("Cliente Y", 500)
+produtor = Produtor("Fábrica X", 1000)
+
+# Utilizando métodos das subclasses
+consumidor.consumir(100)
+produtor.produzir(500)
+```
+
+**Composição** é outro conceito central na POO, onde uma classe é composta por instâncias de outras classes. Diferentemente da herança, em vez de herdar comportamentos, uma classe usa objetos de outras classes como parte de sua implementação.
+
+É muitas vezes preferida quando queremos modelar uma relação entre objetos que não precisa de uma ligação direta entre superclasse e subclasse. Classes compostas podem ser divididas em partes menores e mais modulares, facilitando a manutenção e a compreensão do código.
+
+===
+
+Continuando com o exemplo econômico, podemos ter uma classe Empresa, que é composta de Consumidor e Produtor. Em vez de herdar de uma superclasse comum, a Empresa pode conter instâncias de ambas as classes e delegar a elas as funções adequadas.
+
+```{python}
+class Empresa:
+  def __init__(self, produtor, consumidor):
+      self.produtor = produtor
+      self.consumidor = consumidor
+
+  def operar(self, valor_producao, valor_consumo):
+      self.produtor.produzir(valor_producao)
+      self.consumidor.consumir(valor_consumo)
+
+# Instanciando objetos para composição
+produtor = Produtor("Fábrica X", 1000)
+consumidor = Consumidor("Cliente Y", 500)
+
+# Criando uma Empresa com composição
+empresa = Empresa(produtor, consumidor)
+empresa.operar(200, 50)
+```
