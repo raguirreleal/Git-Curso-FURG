@@ -1,3 +1,5 @@
+## Entrega: dia 18/out
+
 ### Exercício 1º: Cálculo do VPL no R
 
 **Objetivo:** Utilizar o método recursivo para cálculo financeiro de Valor Presente Líquido 
@@ -7,9 +9,9 @@
 O Valor Presente Líquido (VPL) é uma medida financeira que calcula o valor total, no presente, de uma série de fluxos de caixa futuros, descontados a uma taxa de desconto específica. É comumente usado para avaliar a viabilidade de investimentos ou projetos.
 
 **Descrição Detalhada:**
-Para este exercício, você deve criar uma função recursiva em **R** que calcule o VPL de uma série de fluxos de caixa. A função receberá uma lista de fluxos de caixa e uma taxa de desconto anual; ela deve retornar o valor presente líquido desses fluxos. 
+Para este exercício, você deve criar uma função recursiva em **R** que calcule o VPL de uma série de fluxos de caixa. A função receberá uma lista de fluxos de caixa e uma taxa de desconto mensal; ela deve retornar o valor presente líquido desses fluxos. 
 
-Você deve comparar o VPL do mesmo fluxo de caixa para 10 taxas de desconto distintas: de 0.01 a 0.10. Para fazer isso, salve o resultado de cada chamada da função em uma variável (matriz). Nesta matriz, a primeira coluna deve conter a taxa de desconto e a segunda deve conter o VPL - dica: use um loop para chamar a função e armazenar o resultado na matriz. 
+Você deve comparar o VPL do mesmo fluxo de caixa para 10 taxas de desconto distintas: de 0.01 a 0.10. Para fazer isso, salve o resultado de cada chamada da função em uma matriz (ou data frame). Nesta matriz, a primeira coluna deve conter a taxa de desconto e a segunda deve conter o VPL - dica: use um loop para chamar a função e armazenar o resultado na matriz. 
 
 O fluxo de caixa deve ser um vetor de tamanho 100. Use dados simulados, gerados aleatoriamente de uma distribuição normal, com média 5000 e desvio padrão de 1000 - dica: use rnorm().
 
