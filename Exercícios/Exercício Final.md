@@ -1,4 +1,4 @@
-### Exercício 2º: Cálculo do VPL no R
+### Exercício 1º: Cálculo do VPL no R
 
 **Objetivo:** Utilizar o método recursivo para cálculo financeiro de Valor Presente Líquido 
 
