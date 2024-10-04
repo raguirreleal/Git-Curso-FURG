@@ -1,0 +1,5 @@
+# Link para um exemplo de modelo baseados em agentes no Python, utilizando o pacote MESA:
+https://colab.research.google.com/github/projectmesa/mesa/blob/main/docs/tutorials/intro_tutorial.ipynb
+
+# Link para o site do projeto MESA:
+https://mesa.readthedocs.io/stable/overview.html
